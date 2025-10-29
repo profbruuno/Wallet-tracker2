@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Modal Debug Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
+        .modal-content { background: white; margin: 5% auto; padding: 20px; width: 80%; max-width: 600px; border-radius: 8px; }
+        .close { float: right; font-size: 28px; cursor: pointer; }
+        button { padding: 10px 20px; margin: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Modal Debug Test</h1>
+    
+    <button id="testModalBtn">Test Simple Modal</button>
+    <button id="portfolioBtn">Test Portfolio Modal</button>
+
+    <!-- Simple Test Modal -->
+    <div id="testModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Simple Test Modal</h2>
+            <p>If this opens, basic modal functionality works.</p>
+        </div>
+    </div>
+
+    <!-- Actual Portfolio Modal -->
+    <div id="portfolioModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Portfolio Tracker</h2>
+            <div id="debugContent">
+                <p>Testing portfolio modal content...</p>
+                <button onclick="testAuth()">Test Authentication</button>
+                <div id="authResult"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple modal test
+        const testModal = document.getElementById('testModal');
+        const testBtn = document.getElementById('testModalBtn');
+        const portfolioModal = document.getElementById('portfolioModal');
+        const portfolioBtn = document.getElementById('portfolioBtn');
+        const closeButtons = document.querySelectorAll('.close');
+
+        testBtn.onclick = function() {
+            console.log('Simple modal button clicked');
+            testModal.style.display = 'block';
+        }
+
+        portfolioBtn.onclick = function() {
+            console.log('Portfolio modal button clicked');
+            portfolioModal.style.display = 'block';
+        }
+
+        closeButtons.forEach(btn => {
+            btn.onclick = function() {
+                testModal.style.display = 'none';
+                portfolioModal.style.display = 'none';
+            }
+        });
+
+        // Close when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                testModal.style.display = 'none';
+                portfolioModal.style.display = 'none';
+            }
+        }
+
+        // Test authentication
+        async function testAuth() {
+            try {
+                const response = await fetch('./auth.php?action=check');
+                const result = await response.json();
+                document.getElementById('authResult').innerHTML = 
+                    '<pre>' + JSON.stringify(result, null, 2) + '</pre>';
+            } catch (error) {
+                document.getElementById('authResult').innerHTML = 
+                    'Error: ' + error.message;
+            }
+        }
+
+        console.log('Debug modal script loaded');
+    </script>
+</body>
+</html>
